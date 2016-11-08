@@ -1,6 +1,8 @@
-# gping.io
+# gping.io Server
 
-Open Source backend to the gping.io Android app.  [Download](https://play.google.com/store/apps/details?id=io.gping)
+This is the open-source server software for [gping.io](http://gping.io).
+
+The client (Android app) is free with in-app purchasing. [Download at Google Play](https://play.google.com/store/apps/details?id=io.gping).
 
 ## Installation
 
@@ -14,4 +16,3 @@ Open Source backend to the gping.io Android app.  [Download](https://play.google
 * `read.php` - parses URL and displays information, i.e. the web UI
 * `write.php` - records pings from the device 
 * `.htaccess` - routes web requests to the above
-
