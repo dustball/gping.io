@@ -15,7 +15,7 @@ function get_db() {
   if (!$link) {
     die('Could not connect #200: ' . mysql_error());
   }
-  $db_selected = mysql_select_db('dustball', $link);
+  $db_selected = config_db_name($link);
   if (!$db_selected) {
     die('Can\'t use db #200: ' . mysql_error());
   }
