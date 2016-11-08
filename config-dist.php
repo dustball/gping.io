@@ -14,7 +14,7 @@ function config_db_name($link) {
 
 function get_demo_id() {
     // demo ID
-    return "13iakz-u9i6u9";
+    return "xxxxx-xxxxxx";
 }
 
 function get_demo_vin() {
