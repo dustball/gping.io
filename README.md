@@ -8,8 +8,9 @@ The client (Android app) is free with in-app purchasing. [Download at Google Pla
 
 1. Setup apache with mod_rewrite and PHP 
 2. Clone repository into WWW path
-2. Setup a MySQL database
-3. Copy `config-dist.php` to `config.php` and edit 
+3. Setup a MySQL database
+4. Run `mysql db_name < db-schema.sql`
+5. Copy `config-dist.php` to `config.php` and edit 
 
 ## Structure
 
