@@ -1,3 +1,8 @@
 RewriteRule ^(.{6})-(.{6})$ /read.php?id=$1$2 [qsappend]
 
 RewriteRule ^ping$ /write.php [qsappend]
+
+<Files "config.php">
+  Order Deny,Allow
+  Deny from All
+</Files>

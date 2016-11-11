@@ -28,4 +28,3 @@ function get_gmap_key() {
 }
 
 ?>
-
