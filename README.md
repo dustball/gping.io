@@ -17,3 +17,15 @@ The client (Android app) is free with in-app purchasing. [Download at Google Pla
 * `read.php` - parses URL and displays information, i.e. the web UI
 * `write.php` - records pings from the device 
 * `.htaccess` - routes web requests to the above
+
+## Participate
+
+We're on the [Freenode][fn] IRC network in `#gping.io`, there is a [forum][gg] for
+questions, and shortly we should have a list of upcoming feature work if engineering
+is your cup of tea.
+
+Our community guidelines are available in the [code of conduct][conduct].
+
+[fn]: http://freenode.net/
+[conduct]: conduct.md
+[gg]: https://groups.google.com/forum/#!forum/gpingio
