@@ -18,11 +18,14 @@ networking. There are solutions but they are beyond the scope of this doc and of
 tightly integrated with the particular execution engine being used (dev machine virtualization,
 AWS ECS, etc.).
 
+Install it from [here][get-docker], there is also a lot of additional information there
+if you want to know more about how it works.
+
 [docker]: https://www.docker.com/
 [vb]: https://www.virtualbox.org/
 [k8s]: http://kubernetes.io/
 [ecs]: https://aws.amazon.com/ecs/
-[dockerwiki]: https://en.wikipedia.org/wiki/Docker_(software)
+[get-docker]: https://www.docker.com/products/overview
 
 ## gping.io Containers
 
