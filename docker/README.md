@@ -58,3 +58,24 @@ A few scripts exist to make life a bit easier:
 
 All scripts expect an environment variable `GPINGIO_HOME` to be set to the directory containing
 the project checkout.
+
+The `www` container depends on `db` so the launch order must be 1) `docker/db.sh` 2)
+`docker/www.sh`. You can verify both containers are running with `docker ps`:
+
+```
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+7036297070dd        gping.io:live       "apache2-foreground"     3 hours ago         Up 3 hours          0.0.0.0:8080->80/tcp     www
+99150e314044        gping.db:latest     "docker-entrypoint.sh"   3 hours ago         Up 3 hours          0.0.0.0:3306->3306/tcp   db
+```
+
+Accessing the container depends on which version of Docker is being run but the most recent
+versions will automatically forward loopback to the containers on the forwarded ports. As such
+in the example above you can hit [localhost:8080][lh] to view the app and can connect mysql
+clients to `localhost:3306`.
+
+In the event you're running an older Docker version that does not handle localhost -> container
+forwarding there will be an IP associated with the virtual machine acting as host to the containers
+that can _usually_ be found via: `docker-machine ip default`.
+
+[lh]: http://localhost:8080/
