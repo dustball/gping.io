@@ -29,18 +29,21 @@ if you want to know more about how it works.
 
 ## gping.io Containers
 
-To ease development two containers are defined for `gping.io`:
+To ease development a few containers are defined for `gping.io`:
 
-- `gping.io`&mdash;contains a functioning Apache webserver and PHP interpreter
-- `gping.db`&mdash;is a database server running MySQLv8 and preloaded with the
+- `gping.io:latest`&mdash;contains a functioning Apache webserver and PHP interpreter;
+- `gping.io:live`&mdash;contains the same Apache / PHP combination as the
+   `latest` tag but sources the actual website from a directory mounted from
+   the host operating system to ease development;
+- `gping.db:latest`&mdash;is a database server running MySQLv8 and preloaded with the
   `gping` tables; due to the nature of containers this should _not_ be used for
   persistent data as it will be lost at container termination.
 
-`gping.io` should be a suitable container for deployment to a production environment though
-no customization of the PHP runtime has been done. A minimal config will be put into place
-and is located at `docker/www/php.ini`.
+`gping.io:latest` should be a suitable container for deployment to a production
+environment though no customization of the PHP runtime has been done. A minimal
+config will be put into place and is located at `docker/www/php.ini`.
 
-Both containers are configured via environment variables located at `docker/{container}/env`.
+All containers are configured via environment variables located at `docker/{container}/env`.
 
 ## Conveniences
 
@@ -51,10 +54,7 @@ A few scripts exist to make life a bit easier:
 - `docker/db.sh`&mdash;starts an instance of a dev database using the default configurations
   from `docker/db/env`.
 - `docker/www.sh`&mdashstarts an instance of the `gping.io` website with routing to a dev
-  database using default configurations in `docker/www/env`.
+  database using default configurations in `docker/www/env` and the `live` tag by default.
 
 All scripts expect an environment variable `GPINGIO_HOME` to be set to the directory containing
 the project checkout.
-
-The `www` container does not currently support live code loading through volume mounts or
-other means (patches welcome :heart:).
