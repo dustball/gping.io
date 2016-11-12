@@ -19,7 +19,7 @@ if [ ! $? -eq 0 ]; then
 fi
 
 echo "  - gping.io:live"
-docker build -t gping.io:live -f docker/www/live.Dockerfile . > .logs/dacker-www-live.log 2>&1
+docker build -t gping.io:live -f docker/www/live.Dockerfile . > .logs/docker-www-live.log 2>&1
 if [ ! $? -eq 0 ]; then
   cat .logs/docker-www-live.log
   echo
@@ -30,7 +30,7 @@ fi
 echo "  - gping.io:latest"
 docker build -t gping.io:latest -f docker/www/Dockerfile .  > .logs/docker-www-latest.log 2>&1
 if [ ! $? -eq 0 ]; then
-  cat .logs/docker-www-live.log
+  cat .logs/docker-www-latest.log
   echo
   echo container build failed
   exit 1
