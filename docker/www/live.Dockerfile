@@ -5,5 +5,3 @@ RUN docker-php-ext-install mysql
 RUN a2enmod rewrite
 
 COPY docker/www/php.ini /usr/local/etc/php/
-COPY www/ /var/www/html/
-RUN mv /var/www/html/config-dist.php /var/www/html/config.php
