@@ -1,9 +1,13 @@
 #!/bin/bash
 
 DB_CONTAINER=db
-ROOT=${GPINGIO_HOME}
 
-cd ${ROOT}
+if [ -z $GPINGIO_HOME ]; then
+  echo GPINGIO_HOME must be set
+  exit 1
+fi
+
+cd ${GPINGIO_HOME}
 docker kill ${DB_CONTAINER}
 docker rm ${DB_CONTAINER}
 docker run                 \

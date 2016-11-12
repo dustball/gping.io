@@ -2,9 +2,13 @@
 
 WWW_CONTAINER=www
 DB_CONTAINER=db
-ROOT=${GPINGIO_HOME}
 
-cd ${ROOT}
+if [ -z $GPINGIO_HOME ]; then
+  echo GPINGIO_HOME must be set
+  exit 1
+fi
+
+cd ${GPINGIO_HOME}
 docker kill ${WWW_CONTAINER}
 docker rm ${WWW_CONTAINER}
 docker run                  \
