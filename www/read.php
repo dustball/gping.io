@@ -1,7 +1,8 @@
 <?php
 
-include 'config.php';
-include 'util.php';
+require_once('core.php');
+load('util.php');
+load('db/db.php');
 
 $ver = -1;
 
@@ -14,37 +15,36 @@ $resp = Array();
 $resp['result'] = "noop";
 
 if ($_REQUEST['id']) {
-
     $id = $_REQUEST['id'];
     $ids=" (id='".mysql_real_escape_string($id)."') ";
-    
+
     if ($id == get_demo_id()) {
         $demo = 1;
         $ids=" (id='"+get_demo_id()+"') ";
     }
-    
+
 
     $sql = "select id,t,lng,lat,time,concat(concat(mid(t,12,2),'.',concat(mid(t,15,2)))) as hour from gping_gloc where $ids and lat >0 order by t desc limit 120";
-    
+
     $result = mysql_query($sql) or $resp['error'] = mysql_error();
-    
+
     $xy = "";
-    $title = "No GPS data";    
-    
-    if ($result && mysql_num_rows($result)>0) {  
+    $title = "No GPS data";
+
+    if ($result && mysql_num_rows($result)>0) {
         while ($row = mysql_fetch_assoc($result)) {
-            
+
             if ($demo==1) {
                 $row['lat'] += sin($row['hour'])/100 - .05;
                 $row['lng'] -= abs(cos($row['hour'])/50) - .1;
             }
-            
+
             $xy .= "{lat: ".$row['lat'].", lng: ".$row['lng']."},";
             if (!$lat) {
-             $lat = $row['lat'];
-             $ver = $row['ver'];
-             $lng = $row['lng'];
-             $title = "Last GPS Location<br><i>".time_elapsed_string($row['time'])."</i><br><br>time=".$row['time']."<br>lat=$lat<br>lng=$lng<br>accuracy=". number_format ($row['accuracy'],1)." meters<br>";
+              $lat = $row['lat'];
+              $ver = $row['ver'];
+              $lng = $row['lng'];
+              $title = "Last GPS Location<br><i>".time_elapsed_string($row['time'])."</i><br><br>time=".$row['time']."<br>lat=$lat<br>lng=$lng<br>accuracy=". number_format ($row['accuracy'],1)." meters<br>";
             }
         }
     } else {
@@ -53,14 +53,14 @@ if ($_REQUEST['id']) {
     }
 
     $sql = "select * from gping_nloc where $ids and lat >0 order by t desc limit 50";
-    
+
     $result = mysql_query($sql) or $resp['error'] = mysql_error();
-    
+
     $xy2 = "";
     $title2 = "";
-    
-    if ($result && mysql_num_rows($result)>0) {  
-    
+
+    if ($result && mysql_num_rows($result)>0) {
+
         while ($row = mysql_fetch_assoc($result)) {
             if ($demo==1) {
                 $row['lat'] += sin($row['hour'])/100 - .05;
@@ -75,24 +75,24 @@ if ($_REQUEST['id']) {
             }
         }
     }
-        
+
     if (!$lat2) {
         $lat2 = $lat;
         $lng2 = $lng;
     }
-    
-    
+
+
 }
 
   $voltage = "";
-  
+
   $sql = "select t,odbs from gping where $ids and odbs is not null order by gping.t desc limit 1";
-    
+
   $result = mysql_query($sql);
-  
+
   $info = "OBD-II information N/A";
-  
-  if ($result && mysql_num_rows($result)>0) {  
+
+  if ($result && mysql_num_rows($result)>0) {
       if ($row = mysql_fetch_assoc($result)) {
          $o = $row['odbs'];
          $o = str_replace(get_demo_vin(),"1FM000000031337",$o);
@@ -101,29 +101,29 @@ if ($_REQUEST['id']) {
   }
 
   $sql = "select ver,voltage,t from gping where $ids order by gping.t desc limit 120";
-    
+
   $result = mysql_query($sql);
-    
+
   $voltage = "unknown";
   $vv = "";
-  
-  if ($result && mysql_num_rows($result)>0) {  
+
+  if ($result && mysql_num_rows($result)>0) {
       while ($row = mysql_fetch_assoc($result)) {
-         
+
          if ($voltage=="unknown") {
              $ver = $row['ver'];
              $voltage = "Voltage: <code>" . $row['voltage'] . "V</code>  (updated ".time_elapsed_string($row['t']).")";
          }
         $vv = "[" .   $row['voltage'] . "]," . $vv;
-         
+
       }
-  } else {  
+  } else {
         echo "404 You Suck at Typing";
         exit;
   }
-  
-  
-      
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -136,13 +136,13 @@ if ($_REQUEST['id']) {
         height: 100%;
         margin: 0;
         padding: 0;
-        font-family: Roboto, Arial, sans-serif; font-size: 13px; 
+        font-family: Roboto, Arial, sans-serif; font-size: 13px;
       }
       #map {
         height: 100%;
       }
     </style>
-    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['imagesparkline']}]}"></script>              
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1.1','packages':['imagesparkline']}]}"></script>
   </head>
   <body>
     <div id="map"></div>
@@ -161,15 +161,15 @@ if ($_REQUEST['id']) {
             <? print $vv; ?>
         ]);
         var chart = new google.visualization.ImageSparkLine(document.getElementById('chart_div'));
-    
+
         chart.draw(data, {width: 280, height: 29, showAxisLines: false,  showValueLabels: true, labelPosition: 'right'});
     }
-    
+
     google.setOnLoadCallback(drawChart);
-    
+
 <? } ?>
-    
-    
+
+
 
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -179,7 +179,7 @@ function initMap() {
     });
 
     var vPlanCoordinates = [ <? print $xy; ?> ];
-    
+
     var vPath = new google.maps.Polyline({
         path: vPlanCoordinates,
         geodesic: true,
@@ -187,9 +187,9 @@ function initMap() {
         strokeOpacity: 1.0,
         strokeWeight: 2
     });
-    
+
     var vPlanCoordinates2 = [ <? print $xy2; ?> ];
-    
+
     var vPath2 = new google.maps.Polyline({
         path: vPlanCoordinates2,
         geodesic: true,
@@ -197,33 +197,33 @@ function initMap() {
         strokeOpacity: 1.0,
         strokeWeight: 2
     });
-    
+
     var infowindow = new google.maps.InfoWindow({
         content: '<? print $title; ?>'
     });
-    
+
     var infowindow2 = new google.maps.InfoWindow({
         content: '<? print $title2; ?>'
     });
-    
+
     var marker = new google.maps.Marker({
         position: {lat: <? print $lat; ?>, lng: <? print $lng; ?>},
         map: map,
         title: 'Last Network Location Ping'
     });
-    
+
     var marker2 = new google.maps.Marker({
         position: {lat: <? print $lat2; ?>, lng: <? print $lng2; ?>},
         map: map,
         title: 'Last GPS Ping'
     });
-    
-    
+
+
     vPath.setMap(map);
     vPath2.setMap(map);
     infowindow.open(map, marker);
-            
-      
+
+
 }
 </script>
     <script async defer
