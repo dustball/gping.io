@@ -110,10 +110,13 @@ if ($_REQUEST['id']) {
     }
 
     if ($glocCoords->size() > 0) {
-      $title = $glocCoords->first()->title("GPS Location");
+      $f = $glocCoords->first();
+      $title = $f->title("GPS Location");
+      $lat = $f->lat;
+      $lng = $f->lng;
     }
 
-    $ids = "(id = '".mysql_real_escape_string($id)."')";
+    $ids=" (id='".mysql_real_escape_string($id)."') ";
     $sql = "select * from gping_nloc where $ids and lat >0 order by t desc limit 50";
 
     $result = mysql_query($sql) or $resp['error'] = mysql_error();
