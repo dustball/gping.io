@@ -24,6 +24,43 @@ function pinTitle($ll, $type) {
     "accuracy=" . number_format($ll->acc,1) . " meters<br>";
 }
 
+function odbBanner($info) {
+  if (!$info) {
+    return "No ODB-II Info";
+  }
+
+  return "OBD-II Info (updated ".time_elapsed_string($info['t']).")<br>" .
+    "<pre>" . $info."</pre>" .
+    "<small>As of ".$row[t].".</small>";
+}
+
+
+function readTracking($id, $type, $query_fn) {
+  $title = "No $type Data";
+  $lat_lng_set = new LatLngSet();
+  $lat = "51.1787814";
+  $lng = "-1.8266395";
+
+  $demo = ($id == get_demo_id());
+
+  $gloc = $query_fn($id);
+  $lat_lng_set = new LatLngSet();
+
+  if (!$gloc->err()) {
+    while ($row = $gloc->row()) {
+      $lat_lng_set->addRow($row);
+    }
+    if ($demo) { $lat_lng_set->futz(); }
+    if ($lat_lng_set->size() > 0) {
+      $f = $lat_lng_set->first();
+      $title = pinTitle($f, $type);
+      $lat = $f->lat;
+      $lng = $f->lng;
+    }
+  }
+
+  return [$title, $lat_lng_set, $lat, $lng];
+}
 
 if ($_REQUEST['id']) {
     $title = "No GPS data";
@@ -31,74 +68,30 @@ if ($_REQUEST['id']) {
     $id = $_REQUEST['id'];
     $demo = ($id == get_demo_id());
 
-    $gloc = readGPSHistory($id);
-    $glocCoords = new LatLngSet();
+    $gpsTracking = readTracking($id, 'GPS Location', readGPSHistory);
+    $title = $gpsTracking[0];
+    $glocCoords = $gpsTracking[1];
+    $lat = $gpsTracking[2];
+    $lng =  $gpsTracking[3];
 
-    if (!$gloc->err()) {
-      while ($row = $gloc->row()) {
-        $glocCoords->addRow($row);
-      }
-      if ($demo) { $glocCoords->futz(); }
-      if ($glocCoords->size() > 0) {
-        $f = $glocCoords->first();
-        $title = pinTitle($f, "GPS Location");
-        $lat = $f->lat;
-        $lng = $f->lng;
-      }
-    } else {
-        $lat = "51.1787814";
-        $lng = "-1.8266395";
-    }
-
-    $ids=" (id='".mysql_real_escape_string($id)."') ";
-    $sql = "select * from gping_nloc where $ids and lat >0 order by t desc limit 50";
-
-    $result = mysql_query($sql) or $resp['error'] = mysql_error();
-
-    $xy2 = "";
-    $title2 = "";
-
-    if ($result && mysql_num_rows($result)>0) {
-
-        while ($row = mysql_fetch_assoc($result)) {
-            if ($demo==1) {
-                $row['lat'] += sin($row['hour'])/100 - .05;
-                $row['lng'] -= abs(cos($row['hour'])/50) - .1;
-            }
-            $xy2 .= "{lat: ".$row['lat'].", lng: ".$row['lng']."},";
-            if (!$lat2) {
-             $lat2 = $row['lat'];
-             $ver2 = $row['ver'];
-             $lng2 = $row['lng'];
-             $title2 = "Last Network Location<br><i>".time_elapsed_string($row['time'])."</i><br><br>time=".$row['time']."<br>lat=$lat<br>lng=$lng<br>accuracy=". number_format ($row['accuracy'],1)." meters<br>";
-            }
-        }
-    }
-
-    if (!$lat2) {
-        $lat2 = $lat;
-        $lng2 = $lng;
-    }
-
-
+    $netTracking = readTracking($id, 'Network Location', readNetworkHistory);
+    $title2 = $netTracking[0];
+    $nlocCoords = $netTracking[1];
+    $n_lat = $netTracking[2];
+    $n_lng =  $netTracking[3];
 }
 
-  $voltage = "";
+$odbResult = readLastODB($id);
 
-  $sql = "select t,odbs from gping where $ids and odbs is not null order by gping.t desc limit 1";
+$odbInfo = false;
+if (!$odbResult->err() && $odbResult->count() > 0) {
+  $odbInfo = $odbResult->row();
+  $odbInfo['odbs'] = str_replace(get_demo_vin(),"1FM000000031337", $row['odbs']);
+}
 
-  $result = mysql_query($sql);
+// $vResult = readVoltage($id);
 
-  $info = "OBD-II information N/A";
-
-  if ($result && mysql_num_rows($result)>0) {
-      if ($row = mysql_fetch_assoc($result)) {
-         $o = $row['odbs'];
-         $o = str_replace(get_demo_vin(),"1FM000000031337",$o);
-         $info = "OBD-II Info (updated ".time_elapsed_string($row['t']).")<br><pre>" . $o."</pre><small>As of ".$row[t].".</small>";
-      }
-  }
-
+  $ids=" (id='".mysql_real_escape_string($id)."') ";
   $sql = "select ver,voltage,t from gping where $ids order by gping.t desc limit 120";
 
   $result = mysql_query($sql);
@@ -148,7 +141,7 @@ if ($_REQUEST['id']) {
     <div style="font-family:sans-serif; bottom:10px;left:10px; position:absolute">
         <div id="chart_div" style="padding:8px;; background:white; border-radius:2px; color: rgb(86, 86, 86); font-family: Roboto, Arial, sans-serif; font-size: 11px;  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 22px; background-color: rgb(255, 255, 255); background-clip: padding-box;"></div>
     </div>
-    <div style="font-family:sans-serif; top:10px;right:10px;padding:1em; position:absolute; background:white; border-radius:4px; opacity:.8; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; "><? print $info; ?></div>
+    <div style="font-family:sans-serif; top:10px;right:10px;padding:1em; position:absolute; background:white; border-radius:4px; opacity:.8; box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; "><?= odbBanner($odbInfo) ?></div>
     <div style="font-family:sans-serif; top:10px;left:114px;padding:8px;position:absolute; background:white; border-radius:2px; color: rgb(86, 86, 86); font-family: Roboto, Arial, sans-serif; font-size: 11px;  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px; min-width: 22px; background-color: rgb(255, 255, 255); background-clip: padding-box;"><? print $voltage; ?></div>
     <div id="capture"></div>
 <script>
@@ -187,7 +180,7 @@ function initMap() {
         strokeWeight: 2
     });
 
-    var vPlanCoordinates2 = [ <? print $xy2; ?> ];
+    var vPlanCoordinates2 = <?= $nlocCoords->mapPath(); ?>;
 
     var vPath2 = new google.maps.Polyline({
         path: vPlanCoordinates2,
@@ -212,7 +205,7 @@ function initMap() {
     });
 
     var marker2 = new google.maps.Marker({
-        position: {lat: <? print $lat2; ?>, lng: <? print $lng2; ?>},
+        position: {lat: <? print $n_lat; ?>, lng: <? print $n_lng; ?>},
         map: map,
         title: 'Last GPS Ping'
     });

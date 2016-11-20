@@ -1,33 +1,38 @@
 <?php
-  require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
-  load('config.php');
-  load('util.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
+load('config.php');
+load('util.php');
 
-  $db = get_db();
+$db = get_db();
 
-  function _limit($limit) {
-    if (!isset($limit) || !is_int($limit) || $limit < 0) {
-      $limit = 60;
-    }
-
-    return $limit;
+function _limit($limit) {
+  if (!isset($limit) || !is_int($limit) || $limit < 0) {
+    $limit = 60;
   }
 
-  function _readTrackingTable($id, $table, $limit = 120) {
-    global $db;
+  return $limit;
+}
 
-    $esc_id = mysql_real_escape_string($id);
-    $id_clause = "id = '${esc_id}'";
-    $limit = _limit($limit);
+function _idClause($id) {
+  $esc_id = mysql_real_escape_string($id);
+  return "(id = '$esc_id')";
+}
 
-    $sql = <<<QUERY
+function _readTrackingTable($id, $table, $limit = 120) {
+  global $db;
+
+  $esc_id = mysql_real_escape_string($id);
+  $id_clause = "id = '${esc_id}'";
+  $limit = _limit($limit);
+
+  $sql = <<<QUERY
 SELECT
   id,
   t,
   lng,
   lat,
   time,
-  accuracy as acc
+  accuracy
 FROM  ${table}
 WHERE ${id_clause} AND lat > 0
 ORDER BY t DESC LIMIT ${limit}
@@ -36,13 +41,52 @@ QUERY;
     return new QueryResult($db, mysql_query($sql, $db));
   }
 
-  function readGPSHistory($id, $limit = 120) {
-    return _readTrackingTable($id, "gping_gloc", $limit);
-  }
+function readGPSHistory($id, $limit = 120) {
+  return _readTrackingTable($id, "gping_gloc", $limit);
+}
 
-  function readNetworkHistory($id, $limit = 50) {
-    return _readTrackingTable($id, "gping_nloc", $limit);
-  }
+function readNetworkHistory($id, $limit = 50) {
+  return _readTrackingTable($id, "gping_nloc", $limit);
+}
+
+function readLastODB($id) {
+  global $db;
+  $id_clause = _idClause($id);
+
+  $sql = <<<QUERY
+SELECT
+  t,
+  odbs
+FROM
+  gping
+WHERE
+  $id_clause AND
+  odbs IS NOT NULL
+ORDER BY gping.t desc
+LIMIT 1
+QUERY;
+
+  return new QueryResult($db, mysql_query($sql, $db));
+}
+
+function readVoltage($id, $limit = 120) {
+  global $db;
+  $id = _idClause($id);
+  $limit = _limit($limit);
+
+  $sql = <<<QUERY
+SELECT
+  ver,
+  voltage,
+  t
+FROM gping
+WHERE $id_clause
+ORDER BY gping.t DESC
+LIMIT ${limit}
+QUERY;
+
+  return new QueryResult($db, mysql_query($sql, $db));
+}
 
 // QueryResult is a trivial container for interacting with DB results.
 class QueryResult {
@@ -107,7 +151,7 @@ class LatLngSet {
   }
 
   function addRow($r) {
-    $this->add($r['lat'], $r['lng'], $r['acc'], $r['time']);
+    $this->add($r['lat'], $r['lng'], $r['accuracy'], $r['time']);
   }
 
   function first() {
@@ -143,7 +187,7 @@ class LatLngSet {
 
   function mapPath() {
     if ($this->size() == 0) {
-      return "";
+      return "[]";
     }
 
     $print_coord = function($c) {
