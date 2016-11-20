@@ -58,7 +58,7 @@ class LatLngSet {
   }
 
   function first() {
-    if (count($this->coords) == 0) {
+    if (count($this->coords) < 1) {
       return false;
     }
 
@@ -76,6 +76,16 @@ class LatLngSet {
 
   function size() {
     return count($this->coords);
+  }
+
+  function futz() {
+    $nudge = function($ll) {
+      $n = hourminute($ll->time);
+      $ll->lat += sin($n)/100 - .05;
+      $ll->lng -= abs(cos($n)/50) - .1;
+      return $ll;
+    };
+    $this->coords = array_map($nudge, $this->coords);
   }
 
   function str() {
@@ -104,6 +114,7 @@ if ($_REQUEST['id']) {
       while ($row = $gloc->row()) {
         $glocCoords->addRow($row);
       }
+      if ($demo) { $glocCoords->futz(); }
     } else {
         $lat = "51.1787814";
         $lng = "-1.8266395";

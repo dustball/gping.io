@@ -48,4 +48,8 @@ function time_elapsed_string($datetime, $full = false) {
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 
+function hourminute($t_str) {
+  $dt = new DateTime($t_str);
+  $dt->format('H.i');
+}
 ?>
