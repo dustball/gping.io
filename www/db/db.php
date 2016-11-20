@@ -31,26 +31,6 @@ QUERY;
     return new QueryResult($db, mysql_query($sql, $db));
   }
 
-  function test() {
-    global $db;
-    $r = mysql_query('select t from gping_gloc;', $db);
-    $r = readGPSHistory('5sld5lya3p21');
-
-    if ($r->err()) {
-      print_r($r->err());
-      return;
-    }
-
-    echo $r->count() . " rows\n";
-
-    //while ($row = $r->row()) {
-    $row = $r->row();
-      echo json_encode($row) . "\n";
-      $xy .= "{lat: ".$row['lat'].", lng: ".$row['lng']."},";
-      echo $xy . "\n";
-    //}
-  }
-
   class QueryResult {
     private $error;
     private $result;
