@@ -14,92 +14,16 @@ $resp = Array();
 
 $resp['result'] = "noop";
 
-// LatLng stores a coordinate with timestamp and accuracy.
-class LatLng {
-  public $lat;
-  public $lng;
-  public $time;
-  public $acc;
-
-  function __construct($lat, $lng, $acc, $ts) {
-    $this->lat = $lat;
-    $this->lng = $lng;
-    $this->acc = $acc;
-    $this->time = $ts;
-  }
-
-  function title($type) {
-    $time_since = time_elapsed_string($this->time);
-    return "Last ${type}<br>" .
-      "<i>${time_since}</i><br><br>" .
-      "time=$this->time<br>" .
-      "lat=$this->lat<br>" .
-      "lng=$this->lng<br>".
-      "accuracy=" . number_format($this->acc,1) . " meters<br>";
-  }
+function pinTitle($ll, $type) {
+  $time_since = time_elapsed_string($ll->time);
+  return "Last ${type}<br>" .
+    "<i>${time_since}</i><br><br>" .
+    "time=$ll->time<br>" .
+    "lat=$ll->lat<br>" .
+    "lng=$ll->lng<br>".
+    "accuracy=" . number_format($ll->acc,1) . " meters<br>";
 }
 
-// LatLngSet stores a set of LatLng objects and can produce an array in format
-// suitable for passing to the Google Maps API. New LatLngs are added to the
-// end of the set and order is preserved.
-class LatLngSet {
-  private $coords;
-
-  function __construct() {
-    $this->coords = [];
-  }
-
-  function add($lat, $lng, $acc, $time) {
-    array_push($this->coords, new LatLng($lat, $lng, $acc, $time));
-  }
-
-  function addRow($r) {
-    $this->add($r['lat'], $r['lng'], $r['acc'], $r['time']);
-  }
-
-  function first() {
-    if (count($this->coords) < 1) {
-      return false;
-    }
-
-    return $this->coords[0];
-  }
-
-  function last() {
-    $cnt = count($this->coords);
-    if ($cnt == 0) {
-      return false;
-    }
-
-    return $this->coords[$cnt-1];
-  }
-
-  function size() {
-    return count($this->coords);
-  }
-
-  function futz() {
-    $nudge = function($ll) {
-      $n = hourminute($ll->time);
-      $ll->lat += sin($n)/100 - .05;
-      $ll->lng -= abs(cos($n)/50) - .1;
-      return $ll;
-    };
-    $this->coords = array_map($nudge, $this->coords);
-  }
-
-  function str() {
-    if ($this->size() == 0) {
-      return "";
-    }
-
-    $print_coord = function($c) {
-      return "{\"lat\": $c->lat, \"lng\": $c->lng}";
-    };
-
-    return '['.join(', ', array_map($print_coord, $this->coords)).']';
-  }
-}
 
 if ($_REQUEST['id']) {
     $title = "No GPS data";
@@ -115,16 +39,15 @@ if ($_REQUEST['id']) {
         $glocCoords->addRow($row);
       }
       if ($demo) { $glocCoords->futz(); }
+      if ($glocCoords->size() > 0) {
+        $f = $glocCoords->first();
+        $title = pinTitle($f, "GPS Location");
+        $lat = $f->lat;
+        $lng = $f->lng;
+      }
     } else {
         $lat = "51.1787814";
         $lng = "-1.8266395";
-    }
-
-    if ($glocCoords->size() > 0) {
-      $f = $glocCoords->first();
-      $title = $f->title("GPS Location");
-      $lat = $f->lat;
-      $lng = $f->lng;
     }
 
     $ids=" (id='".mysql_real_escape_string($id)."') ";
@@ -254,7 +177,7 @@ function initMap() {
         mapTypeId: google.maps.MapTypeId.SATELLITE
     });
 
-    var vPlanCoordinates = <?= $glocCoords->str(); ?>;
+    var vPlanCoordinates = <?= $glocCoords->mapPath(); ?>;
 
     var vPath = new google.maps.Polyline({
         path: vPlanCoordinates,
