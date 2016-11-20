@@ -14,44 +14,106 @@ $resp = Array();
 
 $resp['result'] = "noop";
 
-if ($_REQUEST['id']) {
-    $id = $_REQUEST['id'];
-    $ids=" (id='".mysql_real_escape_string($id)."') ";
+// LatLng stores a coordinate with timestamp and accuracy.
+class LatLng {
+  public $lat;
+  public $lng;
+  public $time;
+  public $acc;
 
-    if ($id == get_demo_id()) {
-        $demo = 1;
-        $ids=" (id='"+get_demo_id()+"') ";
+  function __construct($lat, $lng, $acc, $ts) {
+    $this->lat = $lat;
+    $this->lng = $lng;
+    $this->acc = $acc;
+    $this->time = $ts;
+  }
+
+  function title($type) {
+    $time_since = time_elapsed_string($this->time);
+    return "Last ${type}<br>" .
+      "<i>${time_since}</i><br><br>" .
+      "time=$this->time<br>" .
+      "lat=$this->lat<br>" .
+      "lng=$this->lng<br>".
+      "accuracy=" . number_format($this->acc,1) . " meters<br>";
+  }
+}
+
+// LatLngSet stores a set of LatLng objects and can produce an array in format
+// suitable for passing to the Google Maps API. New LatLngs are added to the
+// end of the set and order is preserved.
+class LatLngSet {
+  private $coords;
+
+  function __construct() {
+    $this->coords = [];
+  }
+
+  function add($lat, $lng, $acc, $time) {
+    array_push($this->coords, new LatLng($lat, $lng, $acc, $time));
+  }
+
+  function addRow($r) {
+    $this->add($r['lat'], $r['lng'], $r['acc'], $r['time']);
+  }
+
+  function first() {
+    if (count($this->coords) == 0) {
+      return false;
     }
 
+    return $this->coords[0];
+  }
 
-    $sql = "select id,t,lng,lat,time,concat(concat(mid(t,12,2),'.',concat(mid(t,15,2)))) as hour from gping_gloc where $ids and lat >0 order by t desc limit 120";
+  function last() {
+    $cnt = count($this->coords);
+    if ($cnt == 0) {
+      return false;
+    }
 
-    $result = mysql_query($sql) or $resp['error'] = mysql_error();
+    return $this->coords[$cnt-1];
+  }
 
-    $xy = "";
+  function size() {
+    return count($this->coords);
+  }
+
+  function str() {
+    if ($this->size() == 0) {
+      return "";
+    }
+
+    $print_coord = function($c) {
+      return "{\"lat\": $c->lat, \"lng\": $c->lng}";
+    };
+
+    return '['.join(', ', array_map($print_coord, $this->coords)).']';
+  }
+}
+
+if ($_REQUEST['id']) {
     $title = "No GPS data";
 
-    if ($result && mysql_num_rows($result)>0) {
-        while ($row = mysql_fetch_assoc($result)) {
+    $id = $_REQUEST['id'];
+    $demo = ($id == get_demo_id());
 
-            if ($demo==1) {
-                $row['lat'] += sin($row['hour'])/100 - .05;
-                $row['lng'] -= abs(cos($row['hour'])/50) - .1;
-            }
+    $gloc = readGPSHistory($id);
+    $glocCoords = new LatLngSet();
 
-            $xy .= "{lat: ".$row['lat'].", lng: ".$row['lng']."},";
-            if (!$lat) {
-              $lat = $row['lat'];
-              $ver = $row['ver'];
-              $lng = $row['lng'];
-              $title = "Last GPS Location<br><i>".time_elapsed_string($row['time'])."</i><br><br>time=".$row['time']."<br>lat=$lat<br>lng=$lng<br>accuracy=". number_format ($row['accuracy'],1)." meters<br>";
-            }
-        }
+    if (!$gloc->err()) {
+      while ($row = $gloc->row()) {
+        $glocCoords->addRow($row);
+      }
     } else {
         $lat = "51.1787814";
         $lng = "-1.8266395";
     }
 
+    if ($glocCoords->size() > 0) {
+      $title = $glocCoords->first()->title("GPS Location");
+    }
+
+    $ids = "(id = '".mysql_real_escape_string($id)."')";
     $sql = "select * from gping_nloc where $ids and lat >0 order by t desc limit 50";
 
     $result = mysql_query($sql) or $resp['error'] = mysql_error();
@@ -178,7 +240,7 @@ function initMap() {
         mapTypeId: google.maps.MapTypeId.SATELLITE
     });
 
-    var vPlanCoordinates = [ <? print $xy; ?> ];
+    var vPlanCoordinates = <?= $glocCoords->str(); ?>;
 
     var vPath = new google.maps.Polyline({
         path: vPlanCoordinates,
