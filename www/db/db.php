@@ -34,4 +34,14 @@ QUERY;
       $resp['error'] = mysql_error();
     }
   }
+
+  function test() {
+    $r = mysql_query('select t from gping_gloc limit 1;');
+    $row = mysql_fetch_assoc($r);
+    print_r($row);
+    $dt = new DateTime($row['t']);
+    var_dump($dt->format('H.i'));
+  }
+
+  test();
 ?>
