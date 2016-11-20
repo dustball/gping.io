@@ -38,8 +38,8 @@ WHERE ${id_clause} AND lat > 0
 ORDER BY t DESC LIMIT ${limit}
 QUERY;
 
-    return new QueryResult($db, mysql_query($sql, $db));
-  }
+  return new QueryResult($db, mysql_query($sql, $db));
+}
 
 function readGPSHistory($id, $limit = 120) {
   return _readTrackingTable($id, "gping_gloc", $limit);
@@ -71,7 +71,7 @@ QUERY;
 
 function readVoltage($id, $limit = 120) {
   global $db;
-  $id = _idClause($id);
+  $id_clause = _idClause($id);
   $limit = _limit($limit);
 
   $sql = <<<QUERY
@@ -82,7 +82,7 @@ SELECT
 FROM gping
 WHERE $id_clause
 ORDER BY gping.t DESC
-LIMIT ${limit}
+LIMIT $limit
 QUERY;
 
   return new QueryResult($db, mysql_query($sql, $db));

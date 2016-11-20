@@ -30,11 +30,13 @@ function odbBanner($info) {
   }
 
   return "OBD-II Info (updated ".time_elapsed_string($info['t']).")<br>" .
-    "<pre>" . $info."</pre>" .
-    "<small>As of ".$row[t].".</small>";
+    "<pre>" . $info['odbs']."</pre>" .
+    "<small>As of ".$info['t'].".</small>";
 }
 
 
+// readTracking reads tracking data and returns a constructed pin title, lat/lng
+// set, and the first (newest) coordinate reading.
 function readTracking($id, $type, $query_fn) {
   $title = "No $type Data";
   $lat_lng_set = new LatLngSet();
@@ -86,35 +88,26 @@ $odbResult = readLastODB($id);
 $odbInfo = false;
 if (!$odbResult->err() && $odbResult->count() > 0) {
   $odbInfo = $odbResult->row();
-  $odbInfo['odbs'] = str_replace(get_demo_vin(),"1FM000000031337", $row['odbs']);
+  $odbInfo['odbs'] = str_replace(get_demo_vin(),"1FM000000031337", $odbInfo['odbs']);
 }
 
-// $vResult = readVoltage($id);
+$vData = readVoltage($id);
+$voltage = "unknown";
+$vv = "";
 
-  $ids=" (id='".mysql_real_escape_string($id)."') ";
-  $sql = "select ver,voltage,t from gping where $ids order by gping.t desc limit 120";
-
-  $result = mysql_query($sql);
-
-  $voltage = "unknown";
-  $vv = "";
-
-  if ($result && mysql_num_rows($result)>0) {
-      while ($row = mysql_fetch_assoc($result)) {
-
-         if ($voltage=="unknown") {
-             $ver = $row['ver'];
-             $voltage = "Voltage: <code>" . $row['voltage'] . "V</code>  (updated ".time_elapsed_string($row['t']).")";
-         }
-        $vv = "[" .   $row['voltage'] . "]," . $vv;
-
-      }
-  } else {
-        echo "404 You Suck at Typing";
-        exit;
+if (!$vData->err() && $vData->count() > 0) {
+  while ($row = $vData->row()) {
+    if ($voltage == "unknown") {
+      $ver = $row['ver'];
+      $voltage = "Voltage: <code>" . $row['voltage'] . "V</code>  (updated ".time_elapsed_string($row['t']).")";
+    }
+    $vv = "[" .   $row['voltage'] . "], " . $vv;
   }
-
-
+  $vv = substr($vv, 0, -2);
+} else {
+  echo "404 $id not found";
+  exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -146,11 +139,11 @@ if (!$odbResult->err() && $odbResult->count() > 0) {
     <div id="capture"></div>
 <script>
 
-<? if ($vv) { ?>
+<? if ($vv != "") { ?>
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
             ['V'],
-            <? print $vv; ?>
+            <?= $vv ?>
         ]);
         var chart = new google.visualization.ImageSparkLine(document.getElementById('chart_div'));
 
