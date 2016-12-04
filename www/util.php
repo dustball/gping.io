@@ -1,5 +1,14 @@
 <?php
 
+// check an associative array for $from key and, if $to is not already set,
+// update the value to live at $h.
+function rewrite_arr(&$data, $from, $to) {
+  if (!isset($data[$to]) && isset($data[$from])) {
+    $data[$to] = $data[$from];
+    unset($data[$from]);
+  }
+}
+
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
     $charactersLength = strlen($characters);

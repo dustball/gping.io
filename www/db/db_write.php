@@ -1,8 +1,11 @@
 <?php
-//require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
-//load('db/db.php');
+require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
+load('db/db.php');
 
-// Records a location
+// Records a row, $table and $id are required.
+// Returns either false or an error message.
+//
+// $values is 'field name' => (value | [$value, should quote & escape])
 function insert($table, $id, $values) {
   global $db;
 
@@ -20,8 +23,8 @@ function insert($table, $id, $values) {
     return false;
   }
 
-  $names = [];
-  $args = [];
+  $names = ['id'];
+  $args = ["'".mysql_real_escape_string($id)."'"];
 
   foreach ($values as $key => $val) {
     $content = "";
@@ -44,7 +47,7 @@ function insert($table, $id, $values) {
 
   $stmt = "INSERT INTO $table ($names) VALUES ($args)";
 
-  if (!$mysql_query($stmt)) {
+  if (!mysql_query($stmt)) {
     return mysql_error();
   }
   return false;
@@ -110,5 +113,71 @@ function write_gloc($id, $t, $lat, $lng, $acc = 0) {
 function write_nloc($id, $t, $lat, $lng, $acc = 0) {
   global $net;
   write_loc($net, $id, $t, $lat, $lng, $acc);
+}
+
+// extracts $name from $src or returns false; if a value is found will verify
+// validity using $type_fn (x => [error_bool, alteredx | error string]) and
+//
+// if $name is not set returns false otherwise returns [error_bool, insertable | error string]
+function get_value($src, $name, $type_fn) {
+  $v = $src[$name];
+  if (!isset($v)) {
+    return false;
+  }
+
+  $check = $type_fn($v);
+  if ($check[0]) {
+    return $check;
+  }
+
+  return [false, $check[1]];
+}
+
+function check_pass($x) {
+  return [false, $x];
+}
+
+function write_obds($id, $ver, $data) {
+  $names = [];
+  $values = [];
+  $insert_values = [
+    'ver' => q($ver),
+    't'   => 'now()'
+  ];
+
+  $fields = [
+    'bat_percent',
+    'bat_change',
+    'bat_status',
+    'account',
+    'aid',
+    'fleet_id',
+    'locked',
+    'obds',
+    'uptime_phone',
+    'uptime_app',
+    'voltage'
+  ];
+
+  foreach ($fields as $f) {
+    if ($v = get_value($data, $f, check_pass)) {
+      if ($v[0]) {
+        // bail on first error
+        return $v[1];
+      }
+      $insert_values[$f] = q($v[1]);
+    }
+  }
+
+  // the typo lives on in schema soooooo... back we go
+  rewrite_arr($insert_values, 'obds', 'odbs');
+  // eventually we can fix this by
+  //  1. altering table to have both columns
+  //  2. updating insert code to write both
+  //  3. updating read code to read both and prefer newer value if not null
+  //  3. updating write column to write only the newest
+  //  4. move data from old column to new
+  //  5. drop old column.
+  return insert('gping', $id, $insert_values);
 }
 ?>
