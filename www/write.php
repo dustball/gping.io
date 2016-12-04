@@ -43,7 +43,7 @@ if ($_REQUEST['ver']) {
 
 
     if ($_REQUEST['nlat']) {
-      if ($err = $write_nloc($id, $r['ntime'], $r['nlat'], $r['nlng'], $r['naccuracy'])) {
+      if ($err = write_nloc($id, $r['ntime'], $r['nlat'], $r['nlng'], $r['naccuracy'])) {
         $resp['error'] = $err;
       }
       $s = "REPLACE INTO gping_nloc (id,t,time,lat,lng,accuracy) values (" .
