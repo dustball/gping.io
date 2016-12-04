@@ -5,8 +5,8 @@
  */
 
 require_once('core.php');
-load('util.php');
-load('db/db_write.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/util.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/db/db_write.php');
 
 // for the time being make json pretty
 $encode_opts = JSON_PRETTY_PRINT;
@@ -27,14 +27,14 @@ function update($r) {
   $resp['id'] = $id;
 
   if (isset($r['ver'])) {
-    if ($r['glat']) {
-      if ($err = write_gloc($id, $r['glat'], $r['glng'], $r['gaccuracy'])) {
+    if (isset($r['glat'])) {
+      if ($err = write_gloc($id, $r['gtime'], $r['glat'], $r['glng'], $r['gaccuracy'])) {
         $resp['error'] = $err;
         return $resp;
       }
     }
 
-    if ($r['nlat']) {
+    if (isset($r['nlat'])) {
       if ($err = write_nloc($id, $r['ntime'], $r['nlat'], $r['nlng'], $r['naccuracy'])) {
         $resp['error'] = $err;
         return $resp;
