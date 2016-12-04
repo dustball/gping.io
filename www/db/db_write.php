@@ -177,6 +177,8 @@ function write_obds($id, $ver, $data) {
   $insert_values['ver'] = q($ver);
   $insert_values['t'] = 'now()';
 
+  rewrite_arr($insert_values, 'fleet_id', 'fleetid');
+
   // the typo lives on in schema soooooo... back we go
   rewrite_arr($insert_values, 'obds', 'odbs');
   // eventually we can fix this by
