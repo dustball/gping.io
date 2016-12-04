@@ -23,4 +23,5 @@ docker run                             \
   ${LINK}                              \
   -d                                   \
   -v ${GPINGIO_HOME}/www:/var/www/html \
+  -v ${GPINGIO_HOME}/test:/root/test   \
   gping.io:live
