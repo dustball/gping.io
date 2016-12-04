@@ -8,13 +8,15 @@ bat_charge=100
 
 glat=-132
 glng=42
-gtime=2016-07-28 17:05:33
+gtime=1480892316000
 gaccuracy=17.8885
 
 nlat=-133
 nlng=42
-ntime=2016-07-28 17:05:33
+gtime=1480892316000
 naccuracy=17.8885
+
+(ntime and gtime are millis)
 
 uptime_phone=88123
 uptime_app=400
@@ -35,11 +37,8 @@ Run Time = 00:00:53
 ElmVoltage = 14.0
 Fuel = 65.1%
 
-
-
-
 # Fully loaded
-curl "http://gping.io/ping?ver=18&bat_status=F&bat_charge=A&bat_percent=100&glat=-132&glng=42&gtime=2016-07-28+17:05:33&gaccuracy=17.8885&nlat=-133&nlng=42&ntime=2016-07-28+17:05:33&naccuracy=17.8885&uptime_phone=88123&uptime_app=400&interval_n=60&fleet_id=&locked=locked&obds=XXX&voltage=14.4&id=123456123456&obds=VIN+=+VINVINVINVINVINVI"
+curl "http://gping.io/ping?ver=18&bat_status=F&bat_charge=A&bat_percent=100&glat=-132&glng=42&gtime=1480892316000&gaccuracy=17.8885&nlat=-133&nlng=42&ntime=1480892316000&naccuracy=17.8885&uptime_phone=88123&uptime_app=400&interval_n=60&fleet_id=&locked=locked&obds=XXX&voltage=14.4&id=123456123456&obds=VIN+=+VINVINVINVINVINVI"
 
 
 # Minumum useful
