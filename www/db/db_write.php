@@ -169,6 +169,14 @@ function write_obds($id, $ver, $data) {
     }
   }
 
+  // TODO: we could bail here but potentially there is utility in receiving
+  // a ping even if it carries no data?
+  // if (count($insert_values) == 0) {
+  //   return false;
+  // }
+  $insert_values['ver'] = q($ver);
+  $insert_values['t'] = 'now()';
+
   // the typo lives on in schema soooooo... back we go
   rewrite_arr($insert_values, 'obds', 'odbs');
   // eventually we can fix this by
