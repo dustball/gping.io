@@ -1,6 +1,9 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
-load('db/db.php');
+include_once($_SERVER["DOCUMENT_ROOT"] . '/db/db.php');
+
+$gps = 'gping_gloc';
+$net = 'gping_nloc';
 
 // Records a row, $table and $id are required.
 // Returns either false or an error message.
@@ -9,7 +12,7 @@ load('db/db.php');
 function insert($table, $id, $values) {
   global $db;
 
-  if (!isset($table) || $table == "") {
+  if (!isset($table) || $table == null || $table == "") {
     return "no destination provided";
   }
 
@@ -46,57 +49,47 @@ function insert($table, $id, $values) {
   $args = implode(",", $args);
 
   $stmt = "INSERT INTO $table ($names) VALUES ($args)";
-
   if (!mysql_query($stmt)) {
     return mysql_error();
   }
+
   return false;
 }
-
-$gps = 1;
-$net = 2;
-$table = array($gps => 'gping_gloc', $net => 'gping_nloc');
 
 function q($s) { return [$s, true]; }
 
 function write_loc($type, $id, $t, $lat, $lng, $acc = 0) {
-  global $table;
-
   $errs = [];
 
-  $t = $t + 0;
-  if (!is_long($t)) {
-    array_push($errs, "reported time must be a timestamp");
+  if (!is_numeric($t) || !is_long(0 + $t)) {
+    array_push($errs, "reported time ($t) must be a timestamp");
   }
   $t = "from_unixtime(" . (((int)$t) / 1000) . ")";
 
-  $lat = $lat + 0;
   if (!is_numeric($lat)) {
-    array_push($errs, "latitude must be a number");
+    array_push($errs, "latitude ($lat) must be a number");
   }
 
-  $lng = $lng + 0;
   if (!is_numeric($lng)) {
-    array_push($errs, "longitude must be a number");
+    array_push($errs, "longitude ($lng) must be a number");
   }
 
-  $acc = $acc + 0;
   if (!is_numeric($acc)) {
-    array_push($errs, "location accuracy must be a number");
+    array_push($errs, "location accuracy ($acc) must be a number");
   }
 
   if (count($errs) != 0) {
     return $errs;
   }
 
-  $insert_result = insert($table[$type], $id, array(
-    'id' => q($id),
+  $insert_result = insert($type, $id, array(
     't' => 'now()',
     'time' => $t,
     'lat' => $lat,
     'lng' => $lng,
     'accuracy' => $acc
   ));
+
 
   if ($insert_result) {
     return [$insert_result];
@@ -107,12 +100,12 @@ function write_loc($type, $id, $t, $lat, $lng, $acc = 0) {
 
 function write_gloc($id, $t, $lat, $lng, $acc = 0) {
   global $gps;
-  write_loc($gps, $id, $t, $lat, $lng, $acc);
+  return write_loc($gps, $id, $t, $lat, $lng, $acc);
 }
 
 function write_nloc($id, $t, $lat, $lng, $acc = 0) {
   global $net;
-  write_loc($net, $id, $t, $lat, $lng, $acc);
+  return write_loc($net, $id, $t, $lat, $lng, $acc);
 }
 
 // extracts $name from $src or returns false; if a value is found will verify
@@ -147,7 +140,7 @@ function write_obds($id, $ver, $data) {
 
   $fields = [
     'bat_percent',
-    'bat_change',
+    'bat_charge',
     'bat_status',
     'account',
     'aid',
@@ -178,6 +171,10 @@ function write_obds($id, $ver, $data) {
   $insert_values['t'] = 'now()';
 
   rewrite_arr($insert_values, 'fleet_id', 'fleetid');
+  if (isset($insert_values['locked'])) {
+    $v = substr($insert_values['locked'][0], 0, 1);
+    $insert_values['locked'][0] = $v;
+  }
 
   // the typo lives on in schema soooooo... back we go
   rewrite_arr($insert_values, 'obds', 'odbs');
