@@ -25,14 +25,17 @@ fi
 
 case "$1" in
   db)
+    shift
     docker exec -ti db bash
     ;;
 
   www)
+    shift
     docker exec -ti www bash
     ;;
 
   mysql)
+    shift
     source ${GPINGIO_HOME}/docker/db/env
     docker exec -ti db mysql -h localhost -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}
     ;;

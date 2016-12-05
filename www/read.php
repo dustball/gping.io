@@ -2,7 +2,7 @@
 
 require_once('core.php');
 load('util.php');
-load('db/db.php');
+load('db/db_read.php');
 
 $ver = -1;
 

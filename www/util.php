@@ -1,5 +1,15 @@
 <?php
 
+// check an associative array for $from key. If $to does not already have a
+// value the contents of $from will be relocated to $to and $from will be
+// removed.
+function rewrite_arr(&$data, $from, $to) {
+  if (!isset($data[$to]) && isset($data[$from])) {
+    $data[$to] = $data[$from];
+    unset($data[$from]);
+  }
+}
+
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
     $charactersLength = strlen($characters);
