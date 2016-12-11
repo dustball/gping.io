@@ -4,6 +4,7 @@ This is the open-source server software for [gping.io](http://gping.io).
 
 The client (Android app) is free with in-app purchasing for select features. [Download at Google Play](https://play.google.com/store/apps/details?id=io.gping).
 
+<a name="install"></a>
 ## Installation
 
 If you're interested in running your own dev server we've tried to make setup as
@@ -29,13 +30,18 @@ that shourd be made.
 [scriptref]: docker/README.md#conveniences
 [prodref]: docker/Production.md
 
+<a name="participate"></a>
 ## Participate
 
-We're on the [Freenode][fn] IRC network in `#gping.io` and there is a [forum][gg] for
-questions.  If engineering is your cup of tea look at the [issue list][issues]
-and our [roadmap][roadmap].
-
 Our community guidelines are outlined in the [code of conduct][conduct].
+
+- [Roadmap][roadmap]&mdash;Where we see GPing going and the large blocks of
+  work that needs attention next.
+- [Issues List][issues]&mdash;actionable tasks that need to be completed to
+  reach some goal on our roadmap.
+- [Forum][gg]&mdash;Ask questions to the community.
+
+We also try to idle in the `#gping.io` IRC channel on [Freenode][fn].
 
 [fn]: http://freenode.net/
 [conduct]: conduct.md
@@ -43,6 +49,7 @@ Our community guidelines are outlined in the [code of conduct][conduct].
 [issues]: https://github.com/dustball/gping.io/issues
 [roadmap]: docs/Roadmap.md
 
+<a name="structure"></a>
 ## Structure
 
 Components of the project live loosely coupled under `$GPING_HOME` with
