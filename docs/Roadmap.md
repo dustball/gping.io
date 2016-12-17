@@ -22,12 +22,13 @@ on building out the following feature areas:
 
 Our top two priorities have milestones ([auth][ms-auth] and [api][ms-api]) set
 up in GitHub and represent the majority of work in progress. New contributors
-are welcome to send PRs directly or [contact us][contact] for help finding a
-way to contribute suited to their comfort level.
+are welcome to send PRs directly or contact us ([email][listserv] or #gping.io
+on Freenode)) for help finding a way to contribute suited to their comfort
+level.
 
 [ms-auth]: https://github.com/dustball/gping.io/milestone/1
 [ms-api]: https://github.com/dustball/gping.io/milestone/2
-[contact]: ../README.md#participate
+[listserv]: https://groups.google.com/forum/#!forum/gpingio
 
 ---
 
