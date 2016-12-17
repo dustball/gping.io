@@ -9,8 +9,8 @@ data to a third party who's primary goal is to make a profit.
 
 The GPing project aims to become a flexible server capable of supporting geo
 tracking applications with an initial goal of feature parity to existing
-products available in the connected car space. To that our work will be focused
-on building out the following feature areas:
+products available in the connected car space. To achieve that we will be
+prioritizing work in the following feature areas:
 
 1. Authentication and provisioning;
 1. API data access;
