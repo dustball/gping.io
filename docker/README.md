@@ -62,6 +62,7 @@ A few scripts exist to make life a bit easier:
 - `docker/www.sh`&mdashstarts an instance of the `gping.io` website with
    routing to a dev database using default configurations in `docker/www/env`
    and the `live` tag by default.
+- `docker/shell.sh`&mdash;starts a shell in the specified docker container.
 
 All scripts expect an environment variable `GPINGIO_HOME` to be set to the
 directory containing the project checkout.
