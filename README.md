@@ -2,10 +2,12 @@
 
 This is the open-source server software for [gping.io](http://gping.io).
 
-The client (Android app) is free with in-app purchasing for select features. [Download at Google Play](https://play.google.com/store/apps/details?id=io.gping).
+The client (Android app) may be [downloaded at Google Play](https://play.google.com/store/apps/details?id=io.gping).
 
 <a name="install"></a>
 ## Installation
+
+### Docker
 
 If you're interested in running your own dev server we've tried to make setup as
 simple as possible by providing a set of containers. These collect all necessary
@@ -29,6 +31,12 @@ that shourd be made.
 [dockerref]: docker/README.md#containers
 [scriptref]: docker/README.md#conveniences
 [prodref]: docs/Production.md
+
+### Apache
+
+If you already have production Apache server ready to serve PHP files, you can
+always deploy the `www/` directly under your htdocs.  Don't forget to `a2enmod
+rewrite` in order to enable the one Apache module needed for gping.io.
 
 <a name="participate"></a>
 ## Participate
