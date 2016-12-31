@@ -1,27 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.0-dmr, for Linux (x86_64)
---
--- Host: localhost    Database: gping_db
--- ------------------------------------------------------
--- Server version	8.0.0-dmr
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `gping`
---
-
 DROP TABLE IF EXISTS `gping`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gping` (
   `id` char(12) DEFAULT NULL,
   `t` datetime DEFAULT NULL,
@@ -39,14 +16,8 @@ CREATE TABLE `gping` (
   `locked` char(1) DEFAULT NULL,
   KEY `gpi` (`id`,`t`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gping`
---
 
 LOCK TABLES `gping` WRITE;
-/*!40000 ALTER TABLE `gping` DISABLE KEYS */;
 INSERT INTO `gping` VALUES 
   ('5sld5lya3p21','2016-11-07 09:45:50',12,9,'F','U',1,NULL,239334,239241,'TEST',NULL,NULL,NULL),
   ('5sld5lya3p21','2016-11-07 09:44:48',12,9,'F','U',1,NULL,239271,239178,'TEST',NULL,NULL,NULL),
@@ -70,16 +41,9 @@ INSERT INTO `gping` VALUES
   ('5sld5lya3p21','2016-11-07 09:25:39',14,9,'F','U',1,'ModuleVoltage = 14.0\nDistance = 20415km\nVIN = 1FM00000000031337\nAlarms = \nAirTemp = 15C\nRun Time = 00:00:51\nElmVoltage = 14.0\nFuel = 55.3%\n',238123,238030,'TEST',NULL,NULL,NULL),
   ('5sld5lya3p21','2016-11-07 09:24:34',11.5,9,'F','U',1,NULL,238058,237965,'TEST',NULL,NULL,NULL),
   ('5sld5lya3p21','2016-11-07 09:23:32',11.5,9,'F','U',1,NULL,237995,237902,'TEST',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `gping` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `gping_gloc`
---
-
 DROP TABLE IF EXISTS `gping_gloc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gping_gloc` (
   `id` char(12) DEFAULT NULL,
   `t` datetime DEFAULT NULL,
@@ -89,14 +53,8 @@ CREATE TABLE `gping_gloc` (
   `accuracy` float DEFAULT NULL,
   KEY `gpi` (`id`,`t`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gping_gloc`
---
 
 LOCK TABLES `gping_gloc` WRITE;
-/*!40000 ALTER TABLE `gping_gloc` DISABLE KEYS */;
 INSERT INTO `gping_gloc` VALUES
   ('5sld5lya3p21','2016-11-07 09:45:50',-122.197205,47.691288,'2016-11-07 09:45:46',5),
   ('5sld5lya3p21','2016-11-07 09:44:48',-122.197708,47.691433,'2016-11-07 09:44:43',5),
@@ -120,16 +78,9 @@ INSERT INTO `gping_gloc` VALUES
   ('5sld5lya3p21','2016-11-07 09:25:39',-122.194761,47.680569,'2016-11-07 09:23:15',8.94427),
   ('5sld5lya3p21','2016-11-07 09:24:34',-122.193154,47.680609,'2016-11-07 09:23:15',8.94427),
   ('5sld5lya3p21','2016-11-07 09:23:32',-122.190825,47.680674,'2016-11-07 09:23:15',8.94427);
-/*!40000 ALTER TABLE `gping_gloc` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `gping_nloc`
---
-
 DROP TABLE IF EXISTS `gping_nloc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gping_nloc` (
   `id` char(12) DEFAULT NULL,
   `t` datetime DEFAULT NULL,
@@ -139,14 +90,8 @@ CREATE TABLE `gping_nloc` (
   `accuracy` float DEFAULT NULL,
   KEY `gpi` (`id`,`t`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gping_nloc`
---
 
 LOCK TABLES `gping_nloc` WRITE;
-/*!40000 ALTER TABLE `gping_nloc` DISABLE KEYS */;
 INSERT INTO `gping_nloc` VALUES
   ('5sld5lya3p21','2016-11-07 09:45:50',-122.197205,47.691288,'2016-11-07 09:45:40',43),
   ('5sld5lya3p21','2016-11-07 09:44:48',-122.197708,47.691433,'2016-11-07 09:44:52',43),
@@ -170,16 +115,10 @@ INSERT INTO `gping_nloc` VALUES
   ('5sld5lya3p21','2016-11-07 09:25:39',-122.194761,47.680569,'2016-11-07 09:25:23',45),
   ('5sld5lya3p21','2016-11-07 09:24:34',-122.193154,47.680609,'2016-11-07 09:24:39',44),
   ('5sld5lya3p21','2016-11-07 09:23:32',-122.190825,47.680674,'2016-11-07 09:23:06',15);
-/*!40000 ALTER TABLE `gping_nloc` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2016-11-19  5:56:48
+INSERT INTO `login_data` (`email`, `password`) VALUES
+  -- user1@example.com / user1-password
+  ('user1@example.com', '$2y$11$hPEYRAvRivD76/cJ1TcTDeA5n5CqZCTlVR7kpWPlVXtHHLRz0nsve'),
+  -- user2@example.com / user2-password
+  ('user2@example.com', '$2y$11$IZTKEXLNJC/Rd1NPvShKJ.Ww.9SeYhGuUjH7o5rDPzfrclMcvh9za');

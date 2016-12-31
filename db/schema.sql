@@ -1,3 +1,5 @@
+-- v0
+
 CREATE TABLE `gping` (
   `id` char(12) DEFAULT NULL,
   `t` datetime DEFAULT NULL,
@@ -35,3 +37,16 @@ CREATE TABLE `gping_gloc` (
   `accuracy` float DEFAULT NULL,
   KEY `gpi` (`id`,`t`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- v1
+
+CREATE TABLE `login_data` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `email` CHAR(128) NOT NULL UNIQUE KEY,
+  `password` CHAR(126) NOT NULL UNIQUE KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_devices` (
+  `device_id` CHAR(12) PRIMARY KEY,
+  `user_id` BIGINT UNSIGNED NOT NULL REFERENCES `login_data`(`id`) MATCH SIMPLE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
