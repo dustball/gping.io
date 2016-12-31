@@ -1,5 +1,16 @@
 #!/bin/bash
 
+NAMESPACE=$(whoami)
+if [ ! -z $GPINGIO_NAMESPACE ]; then
+  NAMESPACE=$GPINGIO_NAMESPACE
+fi
+
+if [ -z $NAMESPACE ]; then
+  echo Unable to determine namespace for docker images
+else
+  NAMESPACE="$NAMESPACE/"
+fi
+
 WWW_CONTAINER=www
 DB_CONTAINER=db
 
@@ -24,4 +35,4 @@ docker run                             \
   -d                                   \
   -v ${GPINGIO_HOME}/www:/var/www/html \
   -v ${GPINGIO_HOME}/test:/root/test   \
-  gping.io:live
+  ${NAMESPACE}gping.io:live
