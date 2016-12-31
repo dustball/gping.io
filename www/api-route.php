@@ -20,9 +20,14 @@
 
   // TODO: replace with a real dispatcher; or write a simple-but-shitty one
   // https://github.com/nikic/FastRoute looks promising
-  $headVersion = "v0";
+  $headVersion = "v1";
   $routes = [
-    "v0" => ["ping" => "ping"]
+    "v0" => ["ping" => "ping"],
+
+    "v1" => [
+      "ping" => "ping",
+      "signin" => "auth"
+    ],
   ];
 
   $path = $_GET["path"];
