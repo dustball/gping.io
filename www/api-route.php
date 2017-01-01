@@ -1,15 +1,17 @@
 <?php
   include($_SERVER["DOCUMENT_ROOT"] . "/core.php");
   include(dr('api/envelope.php'));
+  include(dr('api-logger.php'));
 
   // constructs a v1 API route $p
   function v1($p) { return "/api/v1/$p"; };
 
   // routing_table constructs the API endpoints and configures their handlers
-  function routing_table(FastRoute\RouteCollector $r) {
+  $routing_table = function(FastRoute\RouteCollector $r) {
     $r->get(v1('ping'), mk_handler('ping'));
     $r->post(v1('signin'), mk_handler('auth'));
   }
+  };
 
   // render produces a HTTP response out of an API response. This includes
   // sending the appropriate respone code and headers as well as JSON encoding
@@ -63,7 +65,7 @@
   //   2. constructs a newly included handler
   //   3. runs the handler providing path-exracted args and the row query string
   function mk_handler($handler_name, $camel_name = null) {
-    return function(array $named_args, $query_string) use ($handler_name, $camel_name) {
+    return function($path, array $named_args, $query_string) use ($handler_name, $camel_name) {
       $handler_path = dr("api/$handler_name.php");
       include($handler_path);
 
@@ -73,14 +75,15 @@
 
       $ctrl = null;
       eval('$ctrl = new ' . $camel_name . 'ApiEndpoint();');
-      return $ctrl->act($named_args, $query_string);
+      return $ctrl->act($path, $named_args, $query_string);
     };
   }
 
   // route will handle the request and return the API Response object produced
   // by the handler it found (or one produced internally in an error case).
   function route() {
-    $router = FastRoute\simpleDispatcher(routing_table);
+    global $routing_table;
+    $router = FastRoute\simpleDispatcher($routing_table);
 
     $path = uri_path($_SERVER["REQUEST_URI"]);
     $query = uri_query($_SERVER["REQUEST_URI"]);
@@ -104,12 +107,17 @@
     case FastRoute\Dispatcher::FOUND:
       $fn = $dispatchResult[1];
       $named_args = $dispatchResult[2];
-      $apiResult = $fn($named_args, $query);
+      $apiResult = $fn($path, $named_args, $query);
       break;
     }
 
     return $apiResult;
   }
 
-  render(route());
+  set_error_handler(api_logger);
+  try {
+    render(route());
+  } catch (Exception $e) {
+    render(new ApiError("Internal Server Error", 503));
+  }
 ?>
