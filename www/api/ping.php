@@ -1,7 +1,10 @@
 <?php
+include(dr("api/endpoint.php"));
 
-function act() {
-  return new ApiSuccess("pong");
+class PingApiEndpoint implements ApiEndpoint {
+  function act(array $named_args, $query_string) {
+    return new ApiSuccess("pong");
+  }
 }
 
 ?>
