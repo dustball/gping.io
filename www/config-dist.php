@@ -20,7 +20,7 @@ function jwt_aud() {
 }
 
 function jwt_secret() {
-  return env('GPING_JWT_SECRET', 'test-secret');
+  return env('GPING_JWT_SECRET', 'dev-secret');
 }
 
 function config_db() {
