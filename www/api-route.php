@@ -10,7 +10,7 @@
   $routing_table = function(FastRoute\RouteCollector $r) {
     $r->get(v1('ping'), mk_handler('ping'));
     $r->post(v1('signin'), mk_handler('auth'));
-  }
+    $r->get(v1('verify'), mk_handler('verify'));
   };
 
   // render produces a HTTP response out of an API response. This includes
