@@ -11,11 +11,11 @@ function load($name) {
 
 require_once(dr('vendor-composer/autoload.php'));
 
-function _method($m) { return $_SERVER["REQUEST_METHOD"] == $m; }
-function _isPost()   { return _method("POST"); }
-function _isGet()    { return _method("GET"); }
-function _isPut()    { return _method("PUT"); }
-function _isDelete() { return _method("DELETE"); }
+function _isMethod($m) { return $_SERVER["REQUEST_METHOD"] == $m; }
+function _isPost()   { return _isMethod("POST"); }
+function _isGet()    { return _isMethod("GET"); }
+function _isPut()    { return _isMethod("PUT"); }
+function _isDelete() { return _isMethod("DELETE"); }
 
 function _getPostBody() {
   // 10k max content
@@ -48,5 +48,17 @@ function _getBodyJSON() {
   }
 
   return json_decode($body, true);
+}
+
+function _snake($s) {
+  return strtolower(
+    preg_replace(
+      ['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'],
+      '$1_$2',
+      $s));
+}
+
+function _camel($s) {
+  return str_replace(' ', '', ucwords(str_replace('_', ' ', $s)));
 }
 ?>

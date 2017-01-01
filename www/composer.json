@@ -13,6 +13,7 @@
       }
   ],
   "require": {
-    "lcobucci/jwt": "^3.2"
+    "lcobucci/jwt": "^3.2",
+    "nikic/fast-route": "^1.1"
   }
 }

@@ -5,17 +5,60 @@ interface Response {
   public function getError();
   public function getPayload();
   public function getResponseCode();
+
+  public function getHeaders();
+  public function getHeader($name);
+  public function addHeader($name, $value);
+  public function delHeaders($name);
 }
 
 class ResponseBase {
   private $code;
+  private $headers;
 
   protected function __construct($code) {
     $this->code = $code;
+    $this->headers = [];
   }
 
   public function getResponseCode() {
     return $this->code;
+  }
+
+  public function getHeaders() {
+    return $this->headers;
+  }
+
+  public function getHeader($name) {
+    $result = [];
+
+    $cname = strtolower($name);
+    foreach (array_keys($this->headers) as $k) {
+      $ck = strtolower($k);
+      if ($cname == $ck) {
+        $result = array_merge($result, $this->headers[$k]);
+      }
+    }
+
+    return $result;
+  }
+
+  public function addHeader($name, $value) {
+    // TODO: validate name & value
+    if (!key_exists($name, $this->headers)) {
+      $this->headers[$name] = [];
+    }
+    $this->headers[$name][] = $value;
+  }
+
+  public function delHeaders($name) {
+    $cname = strtolower($name);
+    foreach (array_keys($this->headers) as $k) {
+      $ck = strtolower($k);
+      if ($cname == $ck) {
+        unset($this->headers[$k]);
+      }
+    }
   }
 }
 
