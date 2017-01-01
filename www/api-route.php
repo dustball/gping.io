@@ -4,7 +4,7 @@
   include(dr('api-logger.php'));
 
   // constructs a v1 API route $p
-  function v1($p) { return "/api/v1/$p"; };
+  function v1($p) { return "/v1/$p"; };
 
   // routing_table constructs the API endpoints and configures their handlers
   $routing_table = function(FastRoute\RouteCollector $r) {
@@ -47,6 +47,11 @@
     if (false !== $pos = strpos($uri, '?')) {
       $uri = substr($uri, 0, $pos);
     }
+
+    if (0 == strpos($uri, "/api")) {
+      $uri = substr($uri, 4);
+    }
+
     return $uri;
   }
 
