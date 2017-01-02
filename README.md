@@ -19,15 +19,23 @@ In summary, however, to get a dev environment running:
 
 1. Clone this repo
 2. Define `GPINGIO_HOME` to be the cloned directory
-3. `$GPINGIO_HOME> ./docker/build.sh`
-4. `$GPINGIO_HOME> ./docker/db.sh`  
+   Recommended: add the following line to your `~/.profile`, `~/.bash_profile`
+   or `~/.bashrc`: `export GPINGIO_HOME='<path>'`, then log out and back in
+   for changes to take effect.
+3. `cd $GPINGIO_HOME`
+4. `./docker/build.sh`
+5. `./docker/db.sh`  
    It may take a few moments for this container to fully spin up as the startup
    process includes bootstraping the DB. You can watch its progress with
-   `docker logs -f db`.
-5. `$GPINGIO_HOME> ./docker/www.sh`
-6. `$GPINGIO_HOME> docker exec www composer install`  
+   `docker logs -f db`.  Note: the first time you run this command you will
+   recieve two "Error response from daemon" erros which is normal.
+6. `./docker/www.sh`
+7. `docker exec www composer install`  
    This instructs [`composer`][composer] to download and install the libraries
    that the GPing service relies on.
+8. (optional) Inspect the running containers with `docker ps`.
+9. (optional) Bring up the command line of the `www` container with:
+   `docker exec -it www bash`
 
 You should now have an instance of the latest build running on `localhost:8080`.
 A brief discussion of the helper scripts used is [here][scriptref]. If you're
