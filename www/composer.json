@@ -1,0 +1,19 @@
+{
+  "config": {
+    "vendor-dir": "vendor-composer",
+    "bin-dir": "vendor-composer/bin",
+    "sort-packages": true
+  },
+  "name": "gping.io/www",
+  "type": "project",
+  "authors": [
+      {
+          "name": "falun",
+          "email": "github@magichappyplace.com"
+      }
+  ],
+  "require": {
+    "lcobucci/jwt": "^3.2",
+    "nikic/fast-route": "^1.1"
+  }
+}

@@ -1,5 +1,6 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
+require_once(dr('db/query_result.php'));
 load('db/db.php');
 
 function _readTrackingTable($id, $table, $limit = 120) {
@@ -72,38 +73,6 @@ QUERY;
   return new QueryResult($db, mysql_query($sql, $db));
 }
 
-// QueryResult is a trivial container for interacting with DB results.
-class QueryResult {
-  private $error;
-  private $result;
-  private $num_rows;
-
-  function __construct($db, $result) {
-    $this->result = $result;
-    $this->error = mysql_error($db);
-
-    if ($result) {
-      $this->num_rows = mysql_num_rows($result);
-    } else {
-      $this->num_rows = 0;
-    }
-  }
-
-  function count() {
-    return $this->num_rows;
-  }
-
-  function row() {
-    $next = mysql_fetch_assoc($this->result);
-    // I don't actually know if mysql_fetch_assoc can set mysql_error... *shrug*
-    $this->error = mysql_error();
-    return $next;
-  }
-
-  function err() {
-    return $this->error;
-  }
-}
 
 // LatLng stores a coordinate with timestamp and accuracy.
 class LatLng {

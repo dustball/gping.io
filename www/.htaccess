@@ -4,7 +4,11 @@ RewriteRule ^(.{6})-(.{6})$ /read.php?id=$1$2 [qsappend]
 
 RewriteRule ^ping$ /write.php [qsappend]
 
-<Files "config.php">
+RewriteRule ^api/(.*)$ /api-route.php?path=$1 [qsappend]
+
+RewriteRule ^vendor-composer/ - [F]
+
+<FilesMatch "config\.php|composer\.(json|lock)">
   Order Deny,Allow
   Deny from All
-</Files>
+</FilesMatch>

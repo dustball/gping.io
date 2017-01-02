@@ -59,15 +59,22 @@ A few scripts exist to make life a bit easier:
    the current `gping.io` tree.
 - `docker/db.sh`&mdash;starts an instance of a dev database using the default
    configurations from `docker/db/env`.
+- `docker/shell.sh`&mdash;starts a shell in the specified docker container.
 - `docker/www.sh`&mdashstarts an instance of the `gping.io` website with
    routing to a dev database using default configurations in `docker/www/env`
    and the `live` tag by default.
-- `docker/shell.sh`&mdash;starts a shell in the specified docker container.
 
-All scripts expect an environment variable `GPINGIO_HOME` to be set to the
-directory containing the project checkout.
+### Environment Variables
 
-The `www` container depends on `db` so the launch order must be 1) `docker/db.sh`
+* `GPINGIO_HOME`&mdash;All scripts expect an this to be set to the directory
+  containing the project checkout.
+* `GPINGIO_NAMESPACE`&mdash;This is used to determine the docker repository
+  under which the GPing containers will be built and pushed. The default is
+  the value returned by `whoami`.
+
+### Dependencies
+
+By default `www` depends on `db` so the launch order must be 1) `docker/db.sh`
 2) `docker/www.sh`. You can verify both containers are running with `docker ps`:
 
 ```
@@ -77,6 +84,9 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 99150e314044        gping.db:latest     "docker-entrypoint.sh"   3 hours ago         Up 3 hours          0.0.0.0:3306->3306/tcp   db
 ```
 
+It is possible to start the `www` container without relying on `db` running
+by passing the `--nodb` flag: `docker/www.sh --nodb`.
+
 Accessing the container depends on which version of Docker is being run but the
 most recent versions will automatically forward loopback to the containers on
 the forwarded ports. As such in the example above you can hit
@@ -84,7 +94,7 @@ the forwarded ports. As such in the example above you can hit
 `localhost:3306`.
 
 In the event you're running an older Docker version that does not handle
-localhost -> container forwarding there will be an IP associated with the
+`localhost` &#8594; container forwarding there will be an IP associated with the
 virtual machine acting as host to the containers that can _usually_ be found
 via: `docker-machine ip default`.
 

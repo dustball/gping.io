@@ -11,6 +11,18 @@ function env($name, $default) {
   return $e;
 }
 
+function jwt_iss() {
+  return env('GPING_JWT_ISSUER', 'gping.io');
+}
+
+function jwt_aud() {
+  return env('GPING_JWT_AUDIENCE', 'gping.io');
+}
+
+function jwt_secret() {
+  return env('GPING_JWT_SECRET', 'dev-secret');
+}
+
 function config_db() {
   $db_host = env('GPING_DB_HOST', 'database.hostname');
   $db_user = env('GPING_DB_USER', 'username');

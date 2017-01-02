@@ -20,8 +20,14 @@ In summary, however, to get a dev environment running:
 1. Clone this repo
 2. Define `GPINGIO_HOME` to be the cloned directory
 3. `$GPINGIO_HOME> ./docker/build.sh`
-4. `$GPINGIO_HOME> ./docker/db.sh`
+4. `$GPINGIO_HOME> ./docker/db.sh`  
+   It may take a few moments for this container to fully spin up as the startup
+   process includes bootstraping the DB. You can watch its progress with
+   `docker logs -f db`.
 5. `$GPINGIO_HOME> ./docker/www.sh`
+6. `$GPINGIO_HOME> docker exec www composer install`  
+   This instructs [`composer`][composer] to download and install the libraries
+   that the GPing service relies on.
 
 You should now have an instance of the latest build running on `localhost:8080`.
 A brief discussion of the helper scripts used is [here][scriptref]. If you're
@@ -31,6 +37,7 @@ that shourd be made.
 [dockerref]: docker/README.md#containers
 [scriptref]: docker/README.md#conveniences
 [prodref]: docs/Production.md
+[composer]: https://getcomposer.org/
 
 ### Apache
 

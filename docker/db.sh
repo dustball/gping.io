@@ -7,6 +7,17 @@ if [ -z $GPINGIO_HOME ]; then
   exit 1
 fi
 
+NAMESPACE=$(whoami)
+if [ ! -z $GPINGIO_NAMESPACE ]; then
+  NAMESPACE=$GPINGIO_NAMESPACE
+fi
+
+if [ -z $NAMESPACE ]; then
+  echo Unable to determine namespace for docker images
+else
+  NAMESPACE="$NAMESPACE/"
+fi
+
 cd ${GPINGIO_HOME}
 docker kill ${DB_CONTAINER}
 docker rm ${DB_CONTAINER}
@@ -15,4 +26,4 @@ docker run                 \
   -p 3306:3306             \
   -d                       \
   --name ${DB_CONTAINER}   \
-  gping.db:latest
+  ${NAMESPACE}gping.db:latest
