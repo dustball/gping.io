@@ -10,6 +10,9 @@ RUN a2enmod rewrite
 RUN apt-get update
 RUN apt-get -y install zlib1g-dev
 RUN apt-get -y install ssh
+RUN apt-get -y install phpunit
+RUN apt-get -y install locate
+RUN updatedb
 
 COPY docker/www/install-composer.sh /root/install-composer.sh
 RUN chmod +x /root/install-composer.sh
