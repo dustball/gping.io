@@ -51,7 +51,8 @@ that shourd be made.
 
 If you already have production Apache server ready to serve PHP files, you can
 always deploy the `www/` directly under your htdocs.  Don't forget to `a2enmod
-rewrite` in order to enable the one Apache module needed for gping.io.
+rewrite` in order to enable `mod_rewrite` in Apache and `composer install` to
+get PHP library dependencies.
 
 <a name="participate"></a>
 ## Participate
