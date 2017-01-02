@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpunit>
+<testsuite name='gping.io tests'>
+    <directory suffix='_test.php'>./</directory>
+</testsuite>
+</phpunit>
