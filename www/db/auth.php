@@ -1,5 +1,7 @@
 <?php
 
+use GPing\DB;
+
 function get_user($db, $email) {
   $email = mysql_real_escape_string($email);
   $query = <<<QUERY
@@ -12,7 +14,7 @@ WHERE
 LIMIT 1;
 QUERY;
 
-  return new QueryResult($db, mysql_query($query, $db));
+  return new DB\QueryResult($db, mysql_query($query, $db));
 }
 
 ?>

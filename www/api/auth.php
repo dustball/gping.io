@@ -7,7 +7,6 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 class AuthApiEndpoint implements ApiEndpoint {
   public function act($path, array $named_args, $query_string) {
     // TODO: need to swap our stuff to an autoloader
-    include(dr('db/query_result.php'));
     include(dr('config.php'));
     include(dr('util.php'));
     include(dr('db/auth.php'));
