@@ -25,4 +25,28 @@ QUERY;
 function create_vehicle($db, $user_id) {
   return create_device($db, $user_id, 1);
 }
+
+// get_devices returns all devices known for the specified user. On success a
+// GPing\Success(GPing\DB\QueryResult) is returned. On failure a GPing\Failure
+// is returned with the error pulled from the mysql_query call.
+function get_devices($db, $user_id) {
+  $query = <<<QUERY
+SELECT
+  d.device_id, d.device_type_id, dt.name, d.group_id
+FROM
+  user_devices d,
+  device_type dt
+WHERE
+  d.device_type_id = dt.device_type_id
+;
+QUERY;
+
+  $result = new DB\QueryResult($db, mysql_query($query, $db));
+
+  if ($result->err()) {
+    return new Failure($result->err());
+  } else {
+    return new Success($result);
+  }
+}
 ?>
