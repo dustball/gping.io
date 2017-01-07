@@ -20,7 +20,7 @@ class NewDeviceApiEndpoint extends AuthedApiEndpoint implements ApiEndpoint {
           return new ApiSuccess(["device_id" => $dev_id]);
         },
         function($err) {
-          return internal_server_error();
+          return internal_server_error($err);
         }
       );
     })->get();

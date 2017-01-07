@@ -15,7 +15,7 @@
     if ($err != null) {
       $errmsg = ": $err";
     }
-    return new ApiError("Internal Server Error$errmsg", 503);
+    return new ApiError("Internal Server Error", 503);
   }
 
   // routing_table constructs the API endpoints and configures their handlers
