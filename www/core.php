@@ -66,6 +66,10 @@ function _camel($s) {
   return str_replace(' ', '', ucwords(str_replace('_', ' ', $s)));
 }
 
+function _canonicalize($s) {
+  return strtolower($s);
+}
+
 function find_gping_lib($name) {
   if (strpos($name, "GPing\\") !== 0) {
     return false;

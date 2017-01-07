@@ -1,11 +1,15 @@
 <?php
+include(dr('config.php'));
+
+use GPing\Success;
+use GPing\Failure;
 use Lcobucci\JWT;
 
 // ApiEndpoint is the expected interface each endpoint for the API will implement.
 interface ApiEndpoint {
   // act performs the actions associated with this endpoint. It must return a
   // Response implementation.
-  public function act($path, array $named_args, $query_string) /*: Response */;
+  public function act($path, array $path_args, $query_string) /*: Response */;
 }
 
 // AuthedApiEndpoint is base class that handles request authentication by
@@ -17,10 +21,9 @@ interface ApiEndpoint {
 // be verify by the endpoint itself.
 abstract class AuthedApiEndpoint implements ApiEndpoint {
   // authed_action will only be called if the request is made with a valid JWT
-  abstract protected function authed_action($user_id, $path, array $named_args, $query_string);
+  abstract protected function authed_action($user_id, $path, array $path_args, $query_string);
 
-  public function act($path, array $named_args, $query_string) {
-    include(dr('config.php'));
+  public function act($path, array $path_args, $query_string) {
 
     $hs = getallheaders();
     $hdr = "Authorization";
@@ -53,15 +56,40 @@ abstract class AuthedApiEndpoint implements ApiEndpoint {
       return $this->bad_token($path);
     }
 
-    return $this->authed_action($uid, $path, $named_args, $query_string);
+    return $this->authed_action($uid, $path, $path_args, $query_string);
   }
 
-  private function not_authed($path) {
+  public function not_authed($path) {
     return new ApiError("not authorized to access $path", 403);
   }
 
-  private function bad_token($path) {
+  public function bad_token($path) {
     return new ApiError("received a bad authorization token for access to $path", 403);
   }
 }
+
+// has_email checks the user associated with $id to ensure they are the same as
+// indicated by $email and returns an Attempt. A Failure will carry an ApiError
+// and a Success will carry an associative array containing user data.
+//
+// On an $id / $email mismpatch $on_auth_failure will be returned wrapped in a
+// GPing\Failure.
+function has_email($db, $id, $email, $on_auth_failure) /* Attempt<Response> */{
+  $email = _canonicalize($email);
+  $result = get_user_by_id($db, $id);
+
+  if ($result->err() || $result->count() != 1) {
+    // if there was an error getting a user or more / less than one user
+    // comes back we got problems
+    return new Failure(internal_server_error());
+  }
+
+  $data = $result->row();
+  if ($data["email"] !== $email) {
+    return new Failure($on_auth_failure);
+  }
+
+  return new Success($result->row());
+}
+
 ?>
