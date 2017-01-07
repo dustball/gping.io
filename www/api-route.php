@@ -6,12 +6,26 @@
   // constructs a v1 API route $p
   function v1($p) { return "/v1/$p"; };
 
+  function bad_endpoint($path) {
+    return new ApiError("API endpoint '$path' is unrecognized", 404);
+  }
+
+  function internal_server_error($err = null) {
+    $errmsg = "";
+    if ($err != null) {
+      $errmsg = ": $err";
+    }
+    return new ApiError("Internal Server Error$errmsg", 503);
+  }
+
   // routing_table constructs the API endpoints and configures their handlers
   $routing_table = function(FastRoute\RouteCollector $r) {
     $r->get(v1('ping'), mk_handler('ping'));
     $r->post(v1('signin'), mk_handler('auth'));
     $r->get(v1('verify'), mk_handler('verify'));
     $r->post(v1('{user}/device'), mk_handler('new_device'));
+    $r->get(v1('{user}/devices'), mk_handler('get_devices'));
+    $r->get(v1('{user}/device/{device_id}'), mk_handler('get_devices'));
   };
 
   // render produces a HTTP response out of an API response. This includes
@@ -100,7 +114,7 @@
 
     switch ($dispatchResult[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
-      $apiResult = new ApiError("API endpoint '$path' is unrecognized", 404);
+      $apiResult = bad_endpoint($path);
       break;
 
     case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
@@ -124,6 +138,6 @@
   try {
     render(route());
   } catch (Exception $e) {
-    render(new ApiError("Internal Server Error", 503));
+    render(internal_server_error($e));
   }
 ?>
