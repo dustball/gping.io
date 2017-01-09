@@ -89,5 +89,5 @@ function find_gping_lib($name) {
   include(lib("$path.php"));
 }
 
-spl_autoload_register(find_gping_lib);
+spl_autoload_register('find_gping_lib');
 ?>
