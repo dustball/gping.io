@@ -59,4 +59,4 @@ CREATE TABLE `device_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `device_type`(`device_type_id`, `name`) VALUES
-  (1, 'Vehicle');
+  (1, 'vehicle');
