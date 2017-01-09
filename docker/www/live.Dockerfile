@@ -12,6 +12,7 @@ RUN apt-get -y install zlib1g-dev
 RUN apt-get -y install ssh
 RUN apt-get -y install phpunit
 RUN apt-get -y install locate
+
 RUN updatedb
 
 COPY docker/www/install-composer.sh /root/install-composer.sh
@@ -27,3 +28,7 @@ RUN docker-php-ext-install mysql
 RUN docker-php-ext-install zip
 
 COPY docker/www/php.ini /usr/local/etc/php/
+
+# Things for test / live instances only can be placed below this so that all
+# the above commands generate a cache usable by the the prod image build process.
+RUN apt-get -y install php5-curl

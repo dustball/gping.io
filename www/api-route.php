@@ -1,5 +1,6 @@
 <?php
   include($_SERVER["DOCUMENT_ROOT"] . "/core.php");
+  include(dr('config.php'));
   include(dr('api/envelope.php'));
   include(dr('api-logger.php'));
 

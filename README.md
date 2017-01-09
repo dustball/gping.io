@@ -63,7 +63,8 @@ Our community guidelines are outlined in the [code of conduct][conduct].
 - [Roadmap][roadmap]&mdash;Where we see GPing going and the large blocks of
   work that needs attention next.
 - [Issues List][issues]&mdash;actionable tasks that need to be completed to
-  reach some goal on our roadmap.
+  reach some goal on our roadmap. Items marked with `help wanted` should be
+  reasonable tasks to get involved with when you're new to the project.
 - [Forum][gg]&mdash;Ask questions to the community.
 
 We also try to idle in the `#gping.io` IRC channel on [Freenode][fn].

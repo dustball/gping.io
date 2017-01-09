@@ -1,5 +1,4 @@
 <?php
-include(dr('config.php'));
 
 use GPing\Success;
 use GPing\Failure;

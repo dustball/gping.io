@@ -60,9 +60,10 @@ A few scripts exist to make life a bit easier:
 - `docker/db.sh`&mdash;starts an instance of a dev database using the default
    configurations from `docker/db/env`.
 - `docker/shell.sh`&mdash;starts a shell in the specified docker container.
-- `docker/www.sh`&mdashstarts an instance of the `gping.io` website with
+- `docker/www.sh`&mdash;starts an instance of the `gping.io` website with
    routing to a dev database using default configurations in `docker/www/env`
    and the `live` tag by default.
+- `docker/test.sh`&mdash;runs unit tests under the `tests` directory.
 
 ### Environment Variables
 
