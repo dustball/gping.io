@@ -8,6 +8,8 @@ RewriteRule ^api/(.*)$ /api-route.php?path=$1 [qsappend]
 
 RewriteRule ^vendor-composer/ - [F]
 
+RewriteRule ^lib/ - [F]
+
 <FilesMatch "config\.php|composer\.(json|lock)">
   Order Deny,Allow
   Deny from All

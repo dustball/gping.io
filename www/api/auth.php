@@ -1,24 +1,22 @@
 <?php
+// TODO: need to swap our stuff to an autoloader
 include(dr("api/endpoint.php"));
+include(dr('util.php'));
+include(dr('db/auth.php'));
 
 use Lcobucci\JWT;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 
 class AuthApiEndpoint implements ApiEndpoint {
   public function act($path, array $named_args, $query_string) {
-    // TODO: need to swap our stuff to an autoloader
-    include(dr('db/query_result.php'));
-    include(dr('config.php'));
-    include(dr('util.php'));
-    include(dr('db/auth.php'));
-
     $db = get_db();
 
     $req = _getBodyJSON();
     $user = $req['username'];
     $pass = $req['password'];
 
-    $r = get_user($db, $user);
+    $r = get_user_for_auth($db, $user);
+
 
     $authed = false;
 

@@ -48,5 +48,15 @@ CREATE TABLE `login_data` (
 
 CREATE TABLE `user_devices` (
   `device_id` CHAR(12) PRIMARY KEY,
-  `user_id` BIGINT UNSIGNED NOT NULL REFERENCES `login_data`(`id`) MATCH SIMPLE
+  `user_id` BIGINT UNSIGNED NOT NULL REFERENCES `login_data`(`id`) MATCH SIMPLE,
+  `device_type_id` INT NOT NULL REFERENCES `device_type`(`device_type_id`) MATCH SIMPLE,
+  `group_id` VARCHAR(256) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `device_type` (
+  `device_type_id` INT PRIMARY KEY,
+  `name` VARCHAR(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `device_type`(`device_type_id`, `name`) VALUES
+  (1, 'Vehicle');

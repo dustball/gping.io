@@ -4,6 +4,10 @@ function dr($p) {
   return $_SERVER["DOCUMENT_ROOT"] . "/$p";
 }
 
+function lib($p) {
+  return dr("lib/$p");
+}
+
 // TODO: remove usage of this
 function load($name) {
   require_once($_SERVER["DOCUMENT_ROOT"] . "/$name");
@@ -61,4 +65,29 @@ function _snake($s) {
 function _camel($s) {
   return str_replace(' ', '', ucwords(str_replace('_', ' ', $s)));
 }
+
+function _canonicalize($s) {
+  return strtolower($s);
+}
+
+function find_gping_lib($name) {
+  if (strpos($name, "GPing\\") !== 0) {
+    return false;
+  }
+
+  $pcs = explode('\\', $name);
+
+  // drop GPing
+  array_shift($pcs);
+  // put remainder in canonical format
+  for ($i = 0; $i < count($pcs); $i++) {
+    $pcs[$i] = _snake($pcs[$i]);
+  }
+
+  // and construct the path!
+  $path = implode(DIRECTORY_SEPARATOR, $pcs);
+  include(lib("$path.php"));
+}
+
+spl_autoload_register(find_gping_lib);
 ?>

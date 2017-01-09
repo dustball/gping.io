@@ -1,7 +1,8 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"] . '/core.php');
-require_once(dr('db/query_result.php'));
 load('db/db.php');
+
+use GPing\DB;
 
 function _readTrackingTable($id, $table, $limit = 120) {
   global $db;
@@ -23,7 +24,7 @@ WHERE ${id_clause} AND lat > 0
 ORDER BY t DESC LIMIT ${limit}
 QUERY;
 
-  return new QueryResult($db, mysql_query($sql, $db));
+  return new DB\QueryResult($db, mysql_query($sql, $db));
 }
 
 function readGPSHistory($id, $limit = 120) {
@@ -51,7 +52,7 @@ ORDER BY gping.t desc
 LIMIT 1
 QUERY;
 
-  return new QueryResult($db, mysql_query($sql, $db));
+  return new DB\QueryResult($db, mysql_query($sql, $db));
 }
 
 function readVoltage($id, $limit = 120) {
@@ -70,7 +71,7 @@ ORDER BY gping.t DESC
 LIMIT $limit
 QUERY;
 
-  return new QueryResult($db, mysql_query($sql, $db));
+  return new DB\QueryResult($db, mysql_query($sql, $db));
 }
 
 
