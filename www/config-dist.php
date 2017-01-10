@@ -1,7 +1,5 @@
 <?php
 
-// Copy this file to config.php and make changes there.
-
 function env($name, $default) {
   $e = $_ENV[$name];
   if (!isset($e)) {
