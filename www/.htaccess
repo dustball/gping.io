@@ -10,7 +10,7 @@ RewriteRule ^vendor-composer/ - [F]
 
 RewriteRule ^lib/ - [F]
 
-<FilesMatch "config\.php|composer\.(json|lock)">
+<FilesMatch "[Cc][Oo][Nn][Ff][Ii][Gg].*|[Cc][Oo][Mm][Pp][Oo][Ss][Ee][Rr].*">
   Order Deny,Allow
   Deny from All
 </FilesMatch>
