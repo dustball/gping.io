@@ -10,7 +10,7 @@ easier and is the suggested route but we'll cover both.
 ### Requirements
 
 1. Your Apache server must have `mod_rewrite` enabled and allow config
-   customizations via `.htaccess` files.
+   customization via `.htaccess` files.
 2. PHP >= v5.6+
 3. Some SQL compatible DB (all development is done against MySQL 8.0 but the
    intent is to not use any proprietary features in the near future.
@@ -66,7 +66,7 @@ many have their meaning is documented in a [sample file][src-php.ini] from PHP.
 
 ### (Required) Service Config
 
-**Hardcoding Data**
+**Hard coding Data**
 
 If taking the route of hard coding your deployment config data open the
 deployed `config.php` file and search for `env('GPING_`. Each call to the env
@@ -103,7 +103,7 @@ TBD. Tracked in [issue 25][iss25].
 
 GPing requires a database for all interesting functionality. The schema is
 currently defined in [`db/schema.sql`][ddl]. There is currently no tooling
-in place to support database vertion migrations (tracked in [issue 17][iss17]).
+in place to support database version migrations (tracked in [issue 17][iss17]).
 
 [iss17]: https://github.com/dustball/gping.io/issues/17
 [ddl]: ../db/schema.sql
