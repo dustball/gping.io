@@ -51,6 +51,11 @@ orchestration but generally it will boil down to having your system:
 Additionally you should make sure to set the number of instances your
 orchestration system will maintain, their restart and autoscaling policies, etc.
 
+The official GPing image that you can use to base your own deployments on
+will live at [`gping/www`][dockerhub].
+
+[dockerhub]: https://hub.docker.com/r/gping/www
+
 ### PHP runtime
 
 Because a container encapsulates everything necessary to run a service it is
