@@ -71,7 +71,7 @@ abstract class AuthedApiEndpoint implements ApiEndpoint {
 // indicated by $email and returns an Attempt. A Failure will carry an ApiError
 // and a Success will carry an associative array containing user data.
 //
-// On an $id / $email mismpatch $on_auth_failure will be returned wrapped in a
+// On an $id / $email mismatch $on_auth_failure will be returned wrapped in a
 // GPing\Failure.
 function has_email($db, $id, $email, $on_auth_failure) /* Attempt<Response> */{
   $email = _canonicalize($email);

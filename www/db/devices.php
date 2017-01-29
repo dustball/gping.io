@@ -49,4 +49,9 @@ QUERY;
     return new Success($result);
   }
 }
+
+function get_device($db, $device_id, $user_id) {
+  $query = <<<QUERY
+QUERY;
+}
 ?>

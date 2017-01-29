@@ -1,0 +1,6 @@
+Current status:
+  - working on adding pash endpoint for GPS data
+  - Need to restructure schema to disconnect device from location data
+  - Is there a way to track location information while protecting user
+    privacy? Could store encrypted data but would shift much (all?)
+    interesting logic to the device.

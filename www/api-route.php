@@ -27,6 +27,7 @@
     $r->post(v1('{user}/device'), mk_handler('new_device'));
     $r->get(v1('{user}/devices'), mk_handler('get_devices'));
     $r->get(v1('{user}/device/{device_id}'), mk_handler('get_devices'));
+    $r->post(v1('{user}/device/{device_id}'), mk_handler('submit_location'));
   };
 
   // render produces a HTTP response out of an API response. This includes
